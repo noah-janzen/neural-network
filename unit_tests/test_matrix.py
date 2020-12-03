@@ -225,6 +225,7 @@ class TestMatrix(unittest.TestCase):
         for i in range(len(input_list)):
             self.assertEqual(actual_result_matrix[0, i], input_list[i])
 
+    # ToDo: Test power method
 
 if __name__ == '__main__':
     unittest.main()

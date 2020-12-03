@@ -28,7 +28,7 @@ class NeuralNetwork:
 
         for i in range(vector.rows):
             x = vector[i, 0]
-            C[i, 0] = 1 / (1 + e**(-x))
+            C[i, 0] = 1 - 2 / (e**(2*x) + 1)
 
         return C
 
@@ -61,10 +61,10 @@ class NeuralNetwork:
         hidden_errors = self.who.transpose() * output_errors
 
         # update the weights for the links between the hidden and output layer
-        self.who += self.learning_rate * (output_errors * final_outputs * (1.0 - final_outputs)) * hidden_outputs.transpose()
+        self.who += self.learning_rate * (output_errors * (1 - final_outputs**2)) * hidden_outputs.transpose()
 
         # update the weights for the links between the input and hidden layer
-        self.wih += self.learning_rate * (hidden_errors * hidden_outputs * (1.0 - hidden_outputs)) * input_vector.transpose()
+        self.wih += self.learning_rate * (hidden_errors * (1 - final_outputs**2)) * input_vector.transpose()
 
         pass
 

@@ -9,7 +9,7 @@ hiddenNodes = 10
 outputNodes = 1
 
 # learning rate
-learningRate = 0.9
+learningRate = 0.2
 
 # create instance of a neural network
 neuralNetwork = NeuralNetwork(inputNodes, hiddenNodes, outputNodes, learningRate)
@@ -32,7 +32,7 @@ plt.show()
 # train the neural network
 
 # epochs is the number of times the training data set is used for training
-epochs = 250
+epochs = 5
 
 for e in range(epochs):
     # go through all records in the training data set
@@ -41,7 +41,7 @@ for e in range(epochs):
         values = record.split(';')
 
         # parse, scale and shift the input
-        values[0] = float(values[0]) #/ 7 * 0.99 + 0.01
+        values[0] = float(values[0]) / 7 * 0.99 + 0.01
         # parse output
         values[1] = float(values[1])
 
@@ -84,7 +84,7 @@ for record in test_data_list:
     correct_output = float(values[1])
     print(correct_output, "correct answer")
     # scale and shift the inputs
-    input_value = float(values[0]) #/ 7 * 0.99 + 0.01
+    input_value = float(values[0]) / 7 * 0.99 + 0.01
 
     # append x value
     x_3.append(float(values[0]))

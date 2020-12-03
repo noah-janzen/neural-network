@@ -167,3 +167,12 @@ class Matrix:
                 C[0, i] = input_list[i]
 
         return C
+
+    # method that
+    def __pow__(self, power, modulo=None):
+        C = Matrix(dims=(self.rows, self.cols))
+        for i in range(C.rows):
+            for j in range(C.cols):
+                C[i, j] = self[i, j]**power
+
+        return C
