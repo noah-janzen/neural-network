@@ -23,8 +23,8 @@ training_data_file.close()
 x_1 = []
 y_1 = []
 for record in training_data_list:
-    x_1.append(float(record.split(';')[0]))
-    y_1.append(float(record.split(';')[1]))
+    x_1.append(float(record.split(',')[0]))
+    y_1.append(float(record.split(',')[1]))
 plt.plot(x_1, y_1, '.')
 plt.title("Trainingsdaten (" + str(len(x_1)) + " Samples)")
 plt.show()
@@ -32,16 +32,16 @@ plt.show()
 # train the neural network
 
 # epochs is the number of times the training data set is used for training
-epochs = 250
+epochs = 100
 
 for e in range(epochs):
     # go through all records in the training data set
     for record in training_data_list:
-        # split the record by the ';' semicolon and parse to float values
-        values = record.split(';')
+        # split the record by the ',' semicolon and parse to float values
+        values = record.split(',')
 
         # parse, scale and shift the input
-        values[0] = float(values[0]) #/ 7 * 0.99 + 0.01
+        values[0] = float(values[0]) / 7 * 0.99 + 0.01
         # parse output
         values[1] = float(values[1])
 
@@ -63,8 +63,8 @@ test_data_file.close()
 x_2 = []
 y_2 = []
 for record in test_data_list:
-    x_2.append(float(record.split(';')[0]))
-    y_2.append(float(record.split(';')[1]))
+    x_2.append(float(record.split(',')[0]))
+    y_2.append(float(record.split(',')[1]))
 plt.plot(x_2, y_2, '.')
 plt.title("Testdaten (" + str(len(x_2)) + " Samples)")
 plt.show()
@@ -77,14 +77,14 @@ y_4 = []
 
 # go through all records in the test data set
 for record in test_data_list:
-    # split the record by the ';' semicolon
-    values = record.split(';')
+    # split the record by the ',' semicolon
+    values = record.split(',')
     print(float(values[0]), "input")
     # correct answer is second value
     correct_output = float(values[1])
     print(correct_output, "correct answer")
     # scale and shift the inputs
-    input_value = float(values[0]) #/ 7 * 0.99 + 0.01
+    input_value = float(values[0]) / 7 * 0.99 + 0.01
 
     # append x value
     x_3.append(float(values[0]))
