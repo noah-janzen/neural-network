@@ -3,6 +3,16 @@ from matrix import Matrix
 
 
 # neural network class definition
+def activation_function(vector):
+    C = Matrix(dims=(vector.rows, 1), fill=0)
+
+    for i in range(vector.rows):
+        x = vector[i, 0]
+        C[i, 0] = 1 / (1 + e ** (-x))
+
+    return C
+
+
 class NeuralNetwork:
 
     # initialise the neural network
@@ -22,16 +32,6 @@ class NeuralNetwork:
 
         pass
 
-    # should be a static method
-    def activation_function(self, vector):
-        C = Matrix(dims=(vector.rows, 1), fill=0)
-
-        for i in range(vector.rows):
-            x = vector[i, 0]
-            C[i, 0] = 1 / (1 + e**(-x))
-
-        return C
-
     # train the neural network
     def train(self, input_list, target_list):
         # convert input_list and target_list into own data type matrix
@@ -46,13 +46,13 @@ class NeuralNetwork:
         hidden_inputs = self.wih * input_vector
 
         # calculate the signals emerging from hidden layer
-        hidden_outputs = self.activation_function(hidden_inputs)
+        hidden_outputs = activation_function(hidden_inputs)
 
         # calculate signals into final output layer
         final_inputs = self.who * hidden_outputs
 
         # calculate the signals emerging from final output layer
-        final_outputs = self.activation_function(final_inputs)
+        final_outputs = activation_function(final_inputs)
 
         # error is the (target - actual)
         output_errors = target_vector - final_outputs
@@ -61,10 +61,12 @@ class NeuralNetwork:
         hidden_errors = self.who.transpose() * output_errors
 
         # update the weights for the links between the hidden and output layer
-        self.who += self.learning_rate * (output_errors * final_outputs * (1.0 - final_outputs)) * hidden_outputs.transpose()
+        self.who += self.learning_rate * (
+                    output_errors * final_outputs * (1.0 - final_outputs)) * hidden_outputs.transpose()
 
         # update the weights for the links between the input and hidden layer
-        self.wih += self.learning_rate * (hidden_errors * hidden_outputs * (1.0 - hidden_outputs)) * input_vector.transpose()
+        self.wih += self.learning_rate * (
+                    hidden_errors * hidden_outputs * (1.0 - hidden_outputs)) * input_vector.transpose()
 
         pass
 
@@ -80,13 +82,13 @@ class NeuralNetwork:
         hidden_inputs = self.wih * input_vector
 
         # calculate the signals emerging from hidden layer
-        hidden_outputs = self.activation_function(hidden_inputs)
+        hidden_outputs = activation_function(hidden_inputs)
 
         # calculate signals into final output layer
         final_inputs = self.who * hidden_outputs
 
         # calculate the signals emerging from output layer
-        final_outputs = self.activation_function(final_inputs)
+        final_outputs = activation_function(final_inputs)
 
         return final_outputs
 
