@@ -42,7 +42,9 @@ class Matrix:
 
         # check if the other object is of type matrix
         if isinstance(other, Matrix):
-            # Todo: Check if sizes of matrices are the same
+            # check size
+            if self.rows != other.rows or self.cols != other.cols:
+                raise ValueError
             # add the elements
             for i in range(self.rows):
                 for j in range(self.cols):
@@ -57,16 +59,23 @@ class Matrix:
 
         return C
 
-    # add on the right-hand-side of the matrix
+    # right scalar and matrix addition
+    # since addition is commutative, call __add__(..)
     def __radd__(self, other):
         return self.__add__(other)
 
-    # scalar and matrix subtraction
+    # left subtraction
+    # left side: matrix 'self'
+    # right side: unknown type 'other'
     def __sub__(self, other):
         C = Matrix(dims=(self.rows, self.cols))
 
-        # check if the other object is of type matrix
+        # if the other object is of type matrix
         if isinstance(other, Matrix):
+            # check size
+            if self.rows != other.rows or self.cols != other.cols:
+                raise ValueError
+            # calculate result Matrix C
             for i in range(self.rows):
                 for j in range(self.cols):
                     C[i, j] = self[i, j] - other[i, j]
@@ -80,45 +89,87 @@ class Matrix:
         # return result matrix
         return C
 
-    # ToDo: Implement
-    # subtract on the right-hand-side of the matrix
+    # right subtraction
+    # left side: unknown type 'other'
+    # right side: matrix 'self'
     def __rsub__(self, other):
         C = Matrix(dims=(self.rows, self.cols))
 
-        for i in range(self.rows):
-            for j in range(self.cols):
-                C[i, j] = other - self[i, j]
-
-        return C
-
-    # pointwise multiplication
-    def __mul__(self, other):
-        # create new Matrix
-        C = Matrix(dims=(self.rows, self.cols), fill=0)
-
-        # matrix multiplication
+        # if the other object is of type matrix
         if isinstance(other, Matrix):
-            # call matrix multiplication function
-            return self.__matmul__(other)
-
-        # scalar multiplication
-        if isinstance(other, (int, float)):
+            # check size
+            if self.rows != other.rows or self.cols != other.cols:
+                raise ValueError
+            # calculate result Matrix C
             for i in range(self.rows):
                 for j in range(self.cols):
-                    C.A[i][j] = self.A[i][j] * other
+                    C[i, j] = other[i, j] - self[i, j]
 
+        # if the other object is a scalar
+        elif isinstance(other, (int, float)):
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    C[i, j] = other - self[i, j]
+
+        # return result matrix
         return C
 
-    # pointwise multiplication right-hand-side of the matrix
+    # multiplication
+    # left side: matrix 'self'
+    # right side: unknown type 'other'
+    def __mul__(self, other):
+        # scalar multiplication if other is of type number
+        if isinstance(other, (int, float)):
+            C = Matrix(dims=(self.rows, self.cols))
+            for r in range(self.rows):
+                for c in range(self.cols):
+                    C[r, c] = self[r, c] * other
+            return C
+
+        if isinstance(other, Matrix):
+            # vector multiplication if both self and other are 1D-arrays
+            if self.cols == 1 and other.cols == 1 and self.rows > 1 and other.rows > 1:
+                # raise ValueError if both matrices are incompatible (when they have different number of rows)
+                if self.rows != other.rows:
+                    raise ValueError
+                # else: compute result matrix C
+                C = Matrix(dims=(self.rows, 1))
+                for r in range(self.rows):
+                    C[r, 0] = self[r, 0] * other[r, 0]
+                return C
+
+            # matrix multiplication (matmul) if both self and other are 2D-Arrays
+            # e.g. 11x2 * 2x1
+            else:
+                return self.__matmul__(other)
+
+    # right multiplication
+    # left side: unknown
+    # right side: matrix
     def __rmul__(self, other):
-        return self.__mul__(other)
+        # scalar multiplication -> multiplication is commutative -> call __mul__
+        if isinstance(other, (int, float)):
+            return self.__mul__(other)
+
+        elif isinstance(other, Matrix):
+            # vector multiplication (nx1 * nx1) -> multiplication is commutative -> call __mul__
+            if self.cols == 1 and other.cols == 1 and self.rows > 1 and other.rows > 1:
+                return self.__mul__(other)
+            # matrix multiplication (lxm * m*n = l*n)
+            return self.__rmatmul__(other)
+
+        else:
+            raise ValueError
 
     # standard matrix multiplication
     def __matmul__(self, other):
-        # ToDo: Check if matrices are compatible
-        # number of cols of A must be equal to the number of rows in B
+        # check if matrices are compatible
+        # number of cols of self must be equal to the number of rows in other
+        if self.cols != other.rows:
+            raise ValueError
+
         if isinstance(other, Matrix):
-            C = Matrix(dims=(self.rows, other.cols), fill=0)
+            C = Matrix(dims=(self.rows, other.cols))
 
             for i in range(C.rows):
                 for j in range(C.cols):
@@ -167,3 +218,9 @@ class Matrix:
                 C[0, i] = input_list[i]
 
         return C
+
+    # method that inserts an element into a mx1 matrix
+    def insert(self, index, value):
+        if self.cols == 1:
+            self.A.insert(index, value)
+            self.rows += 1
