@@ -4,13 +4,14 @@ import matplotlib.pyplot as plt
 import math
 import random
 
+# 1)
 # number of input, hidden, output nodes
 inputNodes = 1
 hiddenNodes = 10
 outputNodes = 1
 
 # learning rate
-learningRate = 0.5
+learningRate = .4
 
 # create instance of a neural network
 neuralNetwork = NeuralNetwork(inputNodes, hiddenNodes, outputNodes, learningRate)
@@ -44,66 +45,74 @@ for record in test_data_list:
 plt.plot(x_test, y_test, '.')
 plt.title("Testdaten (" + str(len(x_test)) + " Samples)")
 plt.show()
-"""
+
+# 2)
 # train the neural network
-acceptable_error = 0.03
+acceptable_error = 0.01
 error = 1
+iterations = []
+errors = []
 iteration = 0
 
-# shuffle training data list
+# shuffe training data
 random.shuffle(training_data_list)
 
 while error > acceptable_error:
+    # grab next record with index 0 to length of training_data_list - 1
+    record = training_data_list[iteration % len(training_data_list)]
 
-    # go through all records in the training data set
-    for record in training_data_list:
+    # split the record by the ',' semicolon and parse to float values
+    values = record.split(',')
+    # parse, scale and shift the input
+    values[0] = float(values[0]) / 7 * 0.99 + 0.01
+    # parse output
+    values[1] = float(values[1])
 
-        # split the record by the ',' semicolon and parse to float values
-        values = record.split(',')
+    # train neural network
+    neuralNetwork.train([values[0]], [values[1]])
 
-        # parse, scale and shift the input
-        values[0] = float(values[0]) / 7 * 0.99 + 0.01
-        # parse output
-        values[1] = float(values[1])
+    iteration += 1
 
-        # train neural network
-        neuralNetwork.train([values[0]], [values[1]])
+    # test neural network after 1000 iterations and compute error
+    if iteration % 1000 == 0:
+        # test
+        scorecard = []
 
-        pass
-    pass
+        # go through all records in the test data set
+        for record in test_data_list:
+            # split the record by the ',' semicolon
+            values = record.split(',')
 
-"""
-#train the neural network
+            # correct answer is second value
+            correct_output = float(values[1])
 
-print(neuralNetwork.wih)
-print(neuralNetwork.who)
+            # scale and shift the inputs
+            input_value = float(values[0]) / 7 * 0.99 + 0.01
 
-random.shuffle(training_data_list)
+            # query the network
+            output = neuralNetwork.query([input_value])
 
-epochs = 110
-for e in range(epochs):
-    print("epoch = ", e)
+            # append delta to scorecard
+            delta = correct_output - output[0, 0]
+            scorecard.append(delta)
 
-    for record in training_data_list:
+        # compute error
+        average_absolute_error = 0
+        for error_value in scorecard:
+            error += abs(error_value)
+        error /= len(scorecard)
 
+        # append to list
+        iterations.append(iteration)
+        errors.append(error)
 
-        # split the record by the ',' semicolon and parse to float values
-        values = record.split(',')
+        # print result
+        print("iteration: ", iteration, "\terror: ", error)
 
-        # parse, scale and shift the input
-        values[0] = float(values[0]) / 7 * 0.99 + 0.01
-        # parse output
-        values[1] = float(values[1])
-
-        # train neural network
-        neuralNetwork.train([values[0]], [values[1]])
-
-
-
-
+# 3) Visualize the test data
 # test the neural network
 
-# scorecard for how well the network performs, inititally empty
+# scorecard for how well the network performs, initially empty
 scorecard = []
 x_3 = []
 y_3 = []
@@ -140,15 +149,15 @@ print("average error: ", average_absolute_error)
 
 plt.plot(x_3, y_3, '.')
 
-x_4 = [0 + x*7/1000 for x in range(1000)]
-y_4 = [(0.25 * math.sin(x_4[n]) + 0.5) for n in range(1000)]
+x_4 = [0 + x * 7 / 1000 for x in range(1000)]
+y_4 = [(math.sin(x_4[n])) for n in range(1000)]
 plt.plot(x_4, y_4)
 
-plt.title("Ergebnisse: 0,25 * sin(x) + 0,5")
+plt.title("Ergebnisse: sin(x)")
 plt.show()
 
-
-print(neuralNetwork.wih)
-print(neuralNetwork.who)
+# print error over time/iteration
+plt.plot(iterations, errors)
+plt.show()
 
 print("ready")

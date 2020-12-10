@@ -4,7 +4,7 @@ import math
 
 
 def function(x):
-    return 0.25 * math.sin(x) + 0.5
+    return math.sin(x)
 
 
 def create_training_values(number_of_samples, start, end):
@@ -33,8 +33,8 @@ def create_test_values(number_of_samples, start, end):
         file.close()
 
 
-trainings_values = 10 ** 4
+trainings_values = 10 ** 5
 create_training_values(trainings_values, 0, 7)
 
-test_values = 10 ** 3
+test_values = 10 ** 4
 create_test_values(test_values, 0, 7)
