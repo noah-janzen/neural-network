@@ -11,12 +11,23 @@ def sigma(vector):
 
     return C
 
+
 def tanh(vector):
     C = Matrix(dims=(vector.rows, 1))
 
     for i in range(vector.rows):
         x = vector[i, 0]
         C[i, 0] = 1 - 2 / (e ** (2 * x) + 1)
+
+    return C
+
+
+def linear(vector):
+    C = Matrix(dims=(vector.rows, 1))
+
+    for i in range(vector.rows):
+        x = vector[i, 0]
+        C[i, 0] = x
 
     return C
 
@@ -67,7 +78,7 @@ class NeuralNetwork:
         final_inputs = self.who * hidden_outputs
 
         # calculate the signals emerging from final output layer
-        final_outputs = sigma(final_inputs)
+        final_outputs = linear(final_inputs)
 
         # error is the (target - actual)
         output_errors = target_vector - final_outputs
@@ -76,18 +87,13 @@ class NeuralNetwork:
         hidden_errors = self.who.transpose() * output_errors
 
         # update the weights for the links between the hidden and output layer
-        dwho = self.learning_rate * (
-                output_errors * final_outputs * (1.0 - final_outputs)) * hidden_outputs.transpose()
+        dwho = self.learning_rate * output_errors * hidden_outputs.transpose()
         self.who += dwho
 
         # update the weights for the links between the input and hidden layer
         dwih = self.learning_rate * (
                 hidden_errors * hidden_outputs * (1.0 - hidden_outputs)) * input_vector.transpose()
         self.wih += dwih
-
-        # print both wih and who
-        #print("wih:\n", self.wih)
-        #print("who:\n", self.who)
 
         pass
 
@@ -115,7 +121,7 @@ class NeuralNetwork:
         final_inputs = self.who * hidden_outputs
 
         # calculate the signals emerging from output layer
-        final_outputs = sigma(final_inputs)
+        final_outputs = linear(final_inputs)
 
         return final_outputs
 
