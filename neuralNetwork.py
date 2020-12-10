@@ -2,9 +2,8 @@ from cmath import e
 from matrix import Matrix
 
 
-# neural network class definition
-def activation_function(vector):
-    C = Matrix(dims=(vector.rows, 1), fill=0)
+def sigma(vector):
+    C = Matrix(dims=(vector.rows, 1))
 
     for i in range(vector.rows):
         x = vector[i, 0]
@@ -12,14 +11,24 @@ def activation_function(vector):
 
     return C
 
+def tanh(vector):
+    C = Matrix(dims=(vector.rows, 1))
 
+    for i in range(vector.rows):
+        x = vector[i, 0]
+        C[i, 0] = 1 - 2 / (e ** (2 * x) + 1)
+
+    return C
+
+
+# neural network class definition
 class NeuralNetwork:
 
     # initialise the neural network
     def __init__(self, input_nodes, hidden_nodes, output_nodes, learning_rate):
         # set number of nodes in each input, hidden, output layer
-        self.input_nodes = input_nodes
-        self.hidden_nodes = hidden_nodes
+        self.input_nodes = input_nodes + 1  # + 1 because of bias
+        self.hidden_nodes = hidden_nodes + 1  # + 1 because of bias
         self.output_nodes = output_nodes
 
         # link weight matrices: wih (weights input -> hidden) and who (weights hidden -> output)
@@ -34,7 +43,10 @@ class NeuralNetwork:
 
     # train the neural network
     def train(self, input_list, target_list):
-        # convert input_list and target_list into own data type matrix
+        # insert bias input to the beginning (position 0) of input_list
+        input_list.insert(0, 1.0)
+
+        # convert target_list into own data type matrix
         input_matrix = Matrix.of(input_list)
         target_matrix = Matrix.of(target_list)
 
@@ -46,13 +58,16 @@ class NeuralNetwork:
         hidden_inputs = self.wih * input_vector
 
         # calculate the signals emerging from hidden layer
-        hidden_outputs = activation_function(hidden_inputs)
+        hidden_outputs = sigma(hidden_inputs)
+
+        # override hidden neuron with index 0 to bias input 1 each train iteration
+        hidden_outputs[0, 0] = 1.0
 
         # calculate signals into final output layer
         final_inputs = self.who * hidden_outputs
 
         # calculate the signals emerging from final output layer
-        final_outputs = activation_function(final_inputs)
+        final_outputs = sigma(final_inputs)
 
         # error is the (target - actual)
         output_errors = target_vector - final_outputs
@@ -61,17 +76,26 @@ class NeuralNetwork:
         hidden_errors = self.who.transpose() * output_errors
 
         # update the weights for the links between the hidden and output layer
-        self.who += self.learning_rate * (
-                    output_errors * final_outputs * (1.0 - final_outputs)) * hidden_outputs.transpose()
+        dwho = self.learning_rate * (
+                output_errors * final_outputs * (1.0 - final_outputs)) * hidden_outputs.transpose()
+        self.who += dwho
 
         # update the weights for the links between the input and hidden layer
-        self.wih += self.learning_rate * (
-                    hidden_errors * hidden_outputs * (1.0 - hidden_outputs)) * input_vector.transpose()
+        dwih = self.learning_rate * (
+                hidden_errors * hidden_outputs * (1.0 - hidden_outputs)) * input_vector.transpose()
+        self.wih += dwih
+
+        # print both wih and who
+        #print("wih:\n", self.wih)
+        #print("who:\n", self.who)
 
         pass
 
     # query the neural network
     def query(self, input_list):
+        # insert bias input 1 to the beginning (position 0) of input_list
+        input_list.insert(0, 1)
+
         # convert input_list into own data type matrix
         input_matrix = Matrix.of(input_list)
 
@@ -82,13 +106,16 @@ class NeuralNetwork:
         hidden_inputs = self.wih * input_vector
 
         # calculate the signals emerging from hidden layer
-        hidden_outputs = activation_function(hidden_inputs)
+        hidden_outputs = sigma(hidden_inputs)
+
+        # override hidden neuron with index 0 to bias input 1
+        hidden_outputs[0, 0] = 1.0
 
         # calculate signals into final output layer
         final_inputs = self.who * hidden_outputs
 
         # calculate the signals emerging from output layer
-        final_outputs = activation_function(final_inputs)
+        final_outputs = sigma(final_inputs)
 
         return final_outputs
 

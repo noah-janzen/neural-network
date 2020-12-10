@@ -33,8 +33,8 @@ def create_test_values(number_of_samples, start, end):
         file.close()
 
 
-trainings_values = 1000
+trainings_values = 10 ** 4
 create_training_values(trainings_values, 0, 7)
 
-test_values = 100
+test_values = 10 ** 3
 create_test_values(test_values, 0, 7)
