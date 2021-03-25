@@ -32,12 +32,13 @@ for record in training_data_list:
 # visualize training data
 fig = plt.figure()
 ax = plt.axes(projection='3d')
-ax.scatter(x1_training, x2_training, y_training, marker='o', c='r')
+ax.scatter(x1_training, x2_training, y_training, marker='o', c='g')
 ax.set_xlabel('x1')
 ax.set_ylabel('x2')
 ax.set_zlabel('y')
 plt.title("Trainingsdaten")
 plt.show()
+
 
 # 2 Train the neural network
 # ==============================
@@ -59,6 +60,7 @@ for epoch in range(epochs):
     # print status
     if ((epoch + 1) % 500) == 0:
         print("epoch: ", epoch + 1)
+
 
 # 3 Test the neural network
 # ==============================
@@ -93,7 +95,7 @@ y_test = np.array(y_test)
 fig = plt.figure()
 ax = fig.gca(projection='3d')
 surf = ax.plot_surface(x1_test, x2_test, y_test)
-plt.title("Testdaten")
+plt.title("Network output")
 ax.set_xlabel('x1')
 ax.set_ylabel('x2')
 ax.set_zlabel('z')

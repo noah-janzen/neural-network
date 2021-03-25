@@ -1,6 +1,5 @@
 from neuralNetwork import NeuralNetwork
 import matplotlib.pyplot as plt
-import math
 import random
 
 # 1 Setup
@@ -51,6 +50,7 @@ plt.plot(x_test, y_test, '.', color='green')
 plt.title("Testdaten (" + str(len(x_test)) + " Samples)")
 plt.show()
 
+
 # 2 Train the neural network
 # ==============================
 
@@ -62,11 +62,11 @@ iteration = 0
 iterations = []
 errors = []
 
-# shuffe training data
+# shuffle training data
 random.shuffle(training_data_list)
 
 while error > acceptable_error:
-    # grab next record (starts index 0 to length of training_data_list - 1)
+    # grab next record
     record = training_data_list[iteration % len(training_data_list)]
 
     # split the record by the ',' semicolon and parse to float values
@@ -78,8 +78,6 @@ while error > acceptable_error:
 
     # train neural network
     neuralNetwork.train([values[0]], [values[1]])
-
-    iteration += 1
 
     # 3 Test the neural network…
     # …after x iterations with test data and compute average absolute error
@@ -124,11 +122,14 @@ while error > acceptable_error:
         # print result
         print("iteration: ", iteration, "\terror: ", error)
 
-# Plot test inputs and test outputs
-plt.plot(x_test, y_test, '.', color='purple')
-# Plot correct sinus function (training values)
-plt.plot(x_training, y_training, color='green')
+    iteration += 1
 
+# Plot test inputs and test outputs
+plt.plot(x_test, y_test, '.', color='purple', label='Network output')
+# Plot correct sinus function (training values)
+plt.plot(x_training, y_training, color='green', label='Training data')
+
+plt.legend()
 plt.title("Testergebnisse")
 plt.show()
 
