@@ -30,6 +30,7 @@ for record in training_data_list:
 # visualize training data
 plt.plot(x_training, y_training, '.')
 plt.title("Trainingsdaten (" + str(len(x_training)) + " Samples)")
+plt.grid()
 plt.show()
 
 # TEST DATA
@@ -48,6 +49,7 @@ for record in test_data_list:
 # visualize test data
 plt.plot(x_test, y_test, '.', color='green')
 plt.title("Testdaten (" + str(len(x_test)) + " Samples)")
+plt.grid()
 plt.show()
 
 
@@ -120,9 +122,10 @@ while error > acceptable_error:
         errors.append(error)
 
         # print result
-        print("iteration: ", iteration, "\terror: ", error)
+        print("iteration: ", iteration, "\terror: ", "%.4f" % error)
 
     iteration += 1
+
 
 # Plot test inputs and test outputs
 plt.plot(x_test, y_test, '.', color='purple', label='Network output')
@@ -131,11 +134,14 @@ plt.plot(x_training, y_training, color='green', label='Training data')
 
 plt.legend()
 plt.title("Testergebnisse")
+plt.grid()
 plt.show()
+
 
 # Plot error over time/iteration
 plt.plot(iterations, errors, color='red')
 plt.title("Error over time/iteration")
 plt.ylabel("Average absolute error")
 plt.xlabel("Number of iteration")
+plt.grid()
 plt.show()

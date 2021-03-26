@@ -32,7 +32,6 @@ def identity(vector):
     return C
 
 
-# neural network class definition
 class NeuralNetwork:
 
     # initialise the neural network

@@ -219,7 +219,7 @@ class Matrix:
 
         return C
 
-    # method that inserts an element into a mx1 matrix
+    # method that inserts an element into a mx1 matrix (practically a vector)
     def insert(self, index, value):
         if self.cols == 1:
             self.A.insert(index, value)
