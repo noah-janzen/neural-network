@@ -2,7 +2,7 @@ from cmath import e
 from matrix import Matrix
 
 
-def sigma(vector):
+def sigmoid(vector):
     C = Matrix(dims=(vector.rows, 1))
 
     for i in range(vector.rows):
@@ -22,7 +22,7 @@ def tanh(vector):
     return C
 
 
-def linear(vector):
+def identity(vector):
     C = Matrix(dims=(vector.rows, 1))
 
     for i in range(vector.rows):
@@ -57,7 +57,7 @@ class NeuralNetwork:
         # insert bias input to the beginning (position 0) of input_list
         input_list.insert(0, 1.0)
 
-        # convert target_list into own data type matrix
+        # convert lists into own data type matrix
         input_matrix = Matrix.of(input_list)
         target_matrix = Matrix.of(target_list)
 
@@ -69,7 +69,7 @@ class NeuralNetwork:
         hidden_inputs = self.wih * input_vector
 
         # calculate the signals emerging from hidden layer
-        hidden_outputs = sigma(hidden_inputs)
+        hidden_outputs = sigmoid(hidden_inputs)
 
         # override hidden neuron with index 0 to bias input 1 each train iteration
         hidden_outputs[0, 0] = 1.0
@@ -78,7 +78,7 @@ class NeuralNetwork:
         final_inputs = self.who * hidden_outputs
 
         # calculate the signals emerging from final output layer
-        final_outputs = linear(final_inputs)
+        final_outputs = identity(final_inputs)
 
         # error is the (target - actual)
         output_errors = target_vector - final_outputs
@@ -112,7 +112,7 @@ class NeuralNetwork:
         hidden_inputs = self.wih * input_vector
 
         # calculate the signals emerging from hidden layer
-        hidden_outputs = sigma(hidden_inputs)
+        hidden_outputs = sigmoid(hidden_inputs)
 
         # override hidden neuron with index 0 to bias input 1
         hidden_outputs[0, 0] = 1.0
@@ -121,8 +121,6 @@ class NeuralNetwork:
         final_inputs = self.who * hidden_outputs
 
         # calculate the signals emerging from output layer
-        final_outputs = linear(final_inputs)
+        final_outputs = identity(final_inputs)
 
         return final_outputs
-
-    pass
