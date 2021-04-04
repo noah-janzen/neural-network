@@ -12,16 +12,6 @@ def sigmoid(vector):
     return C
 
 
-def tanh(vector):
-    C = Matrix(dims=(vector.rows, 1))
-
-    for i in range(vector.rows):
-        x = vector[i, 0]
-        C[i, 0] = 1 - 2 / (e ** (2 * x) + 1)
-
-    return C
-
-
 def identity(vector):
     C = Matrix(dims=(vector.rows, 1))
 

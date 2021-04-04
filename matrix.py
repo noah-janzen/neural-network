@@ -33,8 +33,6 @@ class Matrix:
                     return False
         return True
 
-    # ToDo: implement != operator function
-
     # scalar and matrix addition
     def __add__(self, other):
         # create new matrix
@@ -206,7 +204,7 @@ class Matrix:
 
         return C
 
-    # static method that creates a vector of an input array
+    # creates a matrix from an input list
     @staticmethod
     def of(input_list):
         if isinstance(input_list, (int, float)):
@@ -219,7 +217,7 @@ class Matrix:
 
         return C
 
-    # method that inserts an element into a mx1 matrix (practically a vector)
+    # inserts an element into a mx1 matrix (practically a vector)
     def insert(self, index, value):
         if self.cols == 1:
             self.A.insert(index, value)

@@ -57,7 +57,7 @@ plt.show()
 # ==============================
 
 acceptable_error = 0.01
-error = 1
+error = 1                   # initial error
 iteration = 0
 
 # save error over iteration for statistical purposes
@@ -73,7 +73,7 @@ while error > acceptable_error:
 
     # split the record by the ',' semicolon and parse to float values
     values = record.split(',')
-    # parse, scale and shift the input
+    # parse, scale and shift the input (range of values: 0.01 to 1.00)
     values[0] = float(values[0]) / 7 * 0.99 + 0.01
     # parse output
     values[1] = float(values[1])
@@ -82,7 +82,7 @@ while error > acceptable_error:
     neuralNetwork.train([values[0]], [values[1]])
 
     # 3 Test the neural network…
-    # …after x iterations with test data and compute average absolute error
+    # …after 5000 iterations with test data and compute average absolute error
     if iteration % 5000 == 0:
         # scorecard for how well the network performs, initially empty
         scorecard = []
@@ -130,17 +130,17 @@ while error > acceptable_error:
 # Plot test inputs and test outputs
 plt.plot(x_test, y_test, '.', color='purple', label='Network output')
 # Plot correct sinus function (training values)
-plt.plot(x_training, y_training, color='green', label='Training data')
+plt.plot(x_training, y_training, color='green', label='Correct sinus')
 
 plt.legend()
-plt.title("Testergebnisse")
+plt.title("Learned sinus function")
 plt.grid()
 plt.show()
 
 
-# Plot error over time/iteration
+# Plot the development of the error
 plt.plot(iterations, errors, color='red')
-plt.title("Error over time/iteration")
+plt.title("Development of the error")
 plt.ylabel("Average absolute error")
 plt.xlabel("Number of iteration")
 plt.grid()

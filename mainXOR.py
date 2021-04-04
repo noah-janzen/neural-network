@@ -7,7 +7,7 @@ import numpy as np
 
 # initialize neural network
 inputNodes = 2
-hiddenNodes = 16
+hiddenNodes = 4
 outputNodes = 1
 
 learningRate = 0.3
@@ -62,7 +62,7 @@ for epoch in range(epochs):
         print("epoch: ", epoch + 1)
 
 
-# 3 Test the neural network
+# 3 Show trained neural network
 # ==============================
 
 # generate test values
